@@ -1,0 +1,2 @@
+g++ -IC:\Qt\5.5\mingw492_32\include -IC:\Qt\5.5\mingw492_32\include\QtWidgets -IC:\Qt\5.5\mingw492_32\include\QtGui -IC:\Qt\5.5\mingw492_32\include\QtANGLE -IC:\Qt\5.5\mingw492_32\include\QtCore -I"%JAVA_HOME%\include" -I"%JAVA_HOME%\include\win32" -I. -O0 -Wall -c -oMain.o main.cpp
+g++ -Wl,--kill-at -shared -olibHello.dll Main.o
