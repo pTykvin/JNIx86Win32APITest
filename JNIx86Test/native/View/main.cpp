@@ -12,21 +12,19 @@
 #include <iostream>
 #include <jni.h>
 
-#include "main.h"
-
-
-#define MAINFILE
-
 using namespace std;
 
 int i;
 QGraphicsScene *scene;
-void addTile(const char*, jmethodID, jobject);
+void addTile(const char*);
 QApplication *app;
 QGMenu *menu;
 
-jmethodID midToCall;
-jobject globalCallback;
+
+static JavaVM* cachedJVM;
+
+jmethodID midToCall = NULL;
+jobject globalCallback = NULL;
 
 int main(int argc, char *argv[])
 {
@@ -54,7 +52,7 @@ int main(int argc, char *argv[])
 
     const char *name = "test";
 
-    addTile(name, NULL, NULL);
+    addTile(name);
 
 //    scene->addItem(menu);
 
@@ -64,7 +62,7 @@ int main(int argc, char *argv[])
 //        QGTile *tile = new QGTile;
 //        scene->addItem(tile);
 //        tile->moveBy(c * size,  r * size);
-////        tile->installSceneEventFilter(menu);
+//        tile->installSceneEventFilter(menu);
 //    }
 //    menu->setZValue(100);
 
@@ -74,7 +72,13 @@ int main(int argc, char *argv[])
 }
 
 void call (QString *name) {
-    cout << name;
+    if (cachedJVM != NULL) {
+        cout << "g_vm = " << cachedJVM << endl;
+        JNIEnv *env;
+        cachedJVM->AttachCurrentThread((void **)&env, NULL);
+        cout << "g_vm = " << env << endl;
+        env->CallObjectMethod(globalCallback, midToCall, env->NewStringUTF(name->toUtf8().data()));
+    }
 }
 
 void addTile(const char *name) {
@@ -97,20 +101,16 @@ JNIEXPORT void JNICALL Java_ru_tykvin_jni_nativeinvokers_QTViewHelloWorld_showVi
 }
 
 JNIEXPORT void JNICALL Java_ru_tykvin_jni_nativeinvokers_QTViewHelloWorld_addTileN
-  (JNIEnv *env, jobject, jstring name, jobject callback) {
-    if (name != NULL) {
+  (JNIEnv *, jobject, jstring name, jobject callback) {
+    if (name != NULL && cachedJVM != NULL) {
+        JNIEnv *env;
+        cachedJVM->AttachCurrentThread((void **)&env, NULL);
         const char * path = env->GetStringUTFChars(name, FALSE);
-
         jclass cls = env->FindClass( "ru/tykvin/jni/nativeinvokers/Callback");
-
-        midToCall = env->GetMethodID( cls, "call", "(Ljava/lang/String;)V");
-
-        QByteArray ba = QString(path).toUtf8();
-        jstring name = env->NewStringUTF(ba.data());
-
-        jobject globalCallback = env->NewGlobalRef(callback);
-
-        env->CallObjectMethod(globalCallback, midToCall, name);
+        midToCall = env->GetMethodID( cls, "call", "(Ljava/lang/String;)V");     
+        globalCallback = env->NewGlobalRef(callback);       
+        cout << "ADD TILE " << path;
+        //env->CallObjectMethod(globalCallback, midToCall, name);
 
         //jmethodID midInit = env->GetMethodID( cls, "<init>", "(I)V");
 
@@ -120,7 +120,7 @@ JNIEXPORT void JNICALL Java_ru_tykvin_jni_nativeinvokers_QTViewHelloWorld_addTil
 
 //        _env->CallObjectMethodV(callback, midToCall, "TEST");
 
-        addTile(path, midToCall, callback);
+        addTile(path);
     }
 }
 
@@ -132,7 +132,7 @@ JNIEXPORT void JNICALL Java_ru_tykvin_jni_nativeinvokers_QTViewHelloWorld_close
 jint JNI_OnLoad(JavaVM* aVm, void* )
 {
     // cache java VM
-    g_vm = aVm;
+    cachedJVM = aVm;
     cout << "INIT JVM REFERENCE";
     return JNI_VERSION_1_8;
 }

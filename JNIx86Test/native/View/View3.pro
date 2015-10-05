@@ -23,7 +23,6 @@ SOURCES += main.cpp\
 HEADERS  += widget.h \
     qgtile.h \
     qgmenu.h \
-    ../h/QTViewHelloWorld.h \
-    main.h
+    ../h/QTViewHelloWorld.h
 
 FORMS    += widget.ui

@@ -6,8 +6,6 @@
 #include <QGraphicsItem>
 #include <QGraphicsDropShadowEffect>
 
-void callback(void (*pf)(char*));
-
 class QGTile : public QGraphicsItem
 {
 public:
@@ -21,7 +19,6 @@ public:
     QColor _color;
     QColor _pressedColor;
     QGraphicsDropShadowEffect *_shadow;
-    jmethodID _callMethod;
     void (*_callback)(QString *);
 
     void setName(QString name) { _name = name; }
