@@ -16,13 +16,14 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        widget.cpp \
     qgtile.cpp \
-    qgmenu.cpp
+    qgmenu.cpp \
+    widget.cpp
 
 HEADERS  += widget.h \
     qgtile.h \
     qgmenu.h \
-    ../h/QTViewHelloWorld.h
+    ../h/QTViewHelloWorld.h \
+    main.h
 
 FORMS    += widget.ui

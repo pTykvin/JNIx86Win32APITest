@@ -17,11 +17,11 @@ JNIEXPORT void JNICALL Java_ru_tykvin_jni_nativeinvokers_QTViewHelloWorld_showVi
 
 /*
  * Class:     ru_tykvin_jni_nativeinvokers_QTViewHelloWorld
- * Method:    addTile
- * Signature: (Ljava/lang/String;)V
+ * Method:    addTileN
+ * Signature: (Ljava/lang/String;Ljava/lang/Object;)V
  */
-JNIEXPORT void JNICALL Java_ru_tykvin_jni_nativeinvokers_QTViewHelloWorld_addTile
-  (JNIEnv *, jobject, jstring);
+JNIEXPORT void JNICALL Java_ru_tykvin_jni_nativeinvokers_QTViewHelloWorld_addTileN
+  (JNIEnv *, jobject, jstring, jobject);
 
 /*
  * Class:     ru_tykvin_jni_nativeinvokers_QTViewHelloWorld

@@ -1,6 +1,11 @@
 #include "qgtile.h"
+#include <iostream>
+
+using namespace std;
 
 int QGTile::_z = 0;
+
+
 
 QGTile::QGTile()
 {
@@ -24,7 +29,7 @@ QRectF QGTile::boundingRect() const
     return QRectF(0,0,152,152);
 }
 
-void QGTile::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+void QGTile::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
 {
     paintBg(painter);
     QPen penHText(QColor(0, 0, 0, 136));
@@ -86,8 +91,6 @@ void QGTile::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     QGraphicsItem::mouseReleaseEvent(event);
 }
 
-
-
 bool QGTile::sceneEvent(QEvent *event)
 {
     qDebug() << event->type();
@@ -98,6 +101,9 @@ bool QGTile::sceneEvent(QEvent *event)
         break;
     case QMouseEvent::UngrabMouse:
         setOpacity(1.0);
+        if (_callback != NULL) {
+            (*_callback)(&_name);
+        }
         break;
     default:
         break;

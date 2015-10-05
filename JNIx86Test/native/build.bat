@@ -17,7 +17,7 @@
 :g++ -Wl,--kill-at -shared -Wl,-s -Wl,-subsystem,windows -mthreads -o C:\Qt\5.5\mingw492_32\bin\libHelloQT.dll main.o mainwindow.o moc_mainwindow.o  -lmingw32 -LC:/Qt/5.5/mingw492_32/lib -lqtmain -lshell32 -lQt5Widgets -lQt5Gui -lQt5Core
 
 
-SET qtPath=C:\Qt\5.5
+SET qtPath=D:\Qt\5.5
 SET javaInclude=C:/Program Files (x86)/Java/jdk1.8.0_60/include
 SET projRoot=D:/SVNAll/JNIx86Win32APITest/JNIx86Test/native/
 

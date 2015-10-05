@@ -26,7 +26,7 @@ public class JFXtoQT extends Application implements TileListener, Callback {
         qt.addListener(this);
         VBox root = new VBox(
                 addButton("START QT", e -> qt.showView()),
-                addButton("ADD BUTTON", e -> qt.addTile(getRandomName())),
+                addButton("ADD BUTTON", e -> qt.addTile(getRandomName(), this)),
                 addButton("CLOSE", e -> qt.close()),
                 label
         );

@@ -15,16 +15,16 @@ public:
     QGMenu(QRect sceneRect);
 
     QRectF boundingRect() const;
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+    void paint(QPainter *, const QStyleOptionGraphicsItem *, QWidget *);
 
     void setOpacity(int opacity);
     int getOpacity();
 
     QRectF _rect;
-    int _opacity = 128;
+    int _opacity;
 
 private:
-    QColor *_color = new QColor("#000000");
+    QColor *_color;
     QTimeLine *_timer;
     void fadeTo(int opacity);
 signals:
@@ -33,7 +33,7 @@ public slots:
 
     // QGraphicsItem interface
 protected:
-    virtual bool sceneEventFilter(QGraphicsItem *watched, QEvent *event);
+    virtual bool sceneEventFilter(QGraphicsItem *, QEvent *);
 };
 
 #endif // QGMENU_H

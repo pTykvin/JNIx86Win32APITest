@@ -5,7 +5,8 @@
 #include <QtGui>
 #include <QGraphicsItem>
 #include <QGraphicsDropShadowEffect>
-#include <jni.h>
+
+void callback(void (*pf)(char*));
 
 class QGTile : public QGraphicsItem
 {
@@ -20,10 +21,13 @@ public:
     QColor _color;
     QColor _pressedColor;
     QGraphicsDropShadowEffect *_shadow;
-    jmethodID _callback;
+    jmethodID _callMethod;
+    void (*_callback)(QString *);
 
     void setName(QString name) { _name = name; }
-    void setCallback(jmethodID callback) { _callback = callback;}
+    void setCallback(void (*callback)(QString *)) {
+        _callback = callback;
+    }
 
     void paintBg(QPainter *painter);
     void paintHead(QPainter *painter);

@@ -3,6 +3,7 @@ package ru.tykvin.jni.nativeinvokers;
 import java.util.ArrayList;
 import java.util.List;
 
+import ru.tykvin.jni.JFXtoQT;
 import ru.tykvin.jni.TileListener;
 
 public class QTViewHelloWorld extends NativeLibrary implements TileListener {
@@ -14,9 +15,11 @@ public class QTViewHelloWorld extends NativeLibrary implements TileListener {
 
     public native void showView();
 
-    public native void addTile(String tileName);
-
     public native void close();
+
+    public void addTile(String tileName, Callback callback) {
+        addTileN(tileName, callback);
+    }
 
     private List<TileListener> listeners = new ArrayList<>();
 
@@ -34,5 +37,7 @@ public class QTViewHelloWorld extends NativeLibrary implements TileListener {
     public void tilePressed(String string) {
         listeners.forEach(l -> l.tilePressed(string));
     }
+
+    private native void addTileN(String tileName, Object callback);
 
 }

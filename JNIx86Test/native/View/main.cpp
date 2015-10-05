@@ -9,11 +9,24 @@
 #include "qgtile.h"
 #include "../h/QTViewHelloWorld.h"
 
+#include <iostream>
+#include <jni.h>
+
+#include "main.h"
+
+
+#define MAINFILE
+
+using namespace std;
+
 int i;
 QGraphicsScene *scene;
-void addTile(const char*, jmethodID callback);
+void addTile(const char*, jmethodID, jobject);
 QApplication *app;
 QGMenu *menu;
+
+jmethodID midToCall;
+jobject globalCallback;
 
 int main(int argc, char *argv[])
 {
@@ -41,7 +54,7 @@ int main(int argc, char *argv[])
 
     const char *name = "test";
 
-    addTile(name, NULL);
+    addTile(name, NULL, NULL);
 
 //    scene->addItem(menu);
 
@@ -60,7 +73,11 @@ int main(int argc, char *argv[])
     return app->exec();
 }
 
-void addTile(const char *name, jmethodID callback) {
+void call (QString *name) {
+    cout << name;
+}
+
+void addTile(const char *name) {
     int size = 152 + 16;
     int r = i / 5;
     int c = i % 5;
@@ -68,7 +85,7 @@ void addTile(const char *name, jmethodID callback) {
     scene->addItem(tile);
     tile->moveBy(c * size,  r * size);
     tile->installSceneEventFilter(menu);
-    tile->setCallback(callback);
+    tile->setCallback(call);
     tile->setName(name);
     i++;
 }
@@ -79,24 +96,44 @@ JNIEXPORT void JNICALL Java_ru_tykvin_jni_nativeinvokers_QTViewHelloWorld_showVi
         main(1, new char*);
 }
 
-JNIEXPORT void JNICALL Java_ru_tykvin_jni_nativeinvokers_QTViewHelloWorld_addTile
-  (JNIEnv *env, jobject, jstring name) {
+JNIEXPORT void JNICALL Java_ru_tykvin_jni_nativeinvokers_QTViewHelloWorld_addTileN
+  (JNIEnv *env, jobject, jstring name, jobject callback) {
     if (name != NULL) {
         const char * path = env->GetStringUTFChars(name, FALSE);
 
-//        jclass cls = env->FindClass( "ru/tykvin/jni/nativeinvokers/Callback");
-//        jmethodID midInit = env->GetMethodID( cls, "<init>", "(I)V");
-//        // Call back constructor to allocate a new instance, with an int argument
+        jclass cls = env->FindClass( "ru/tykvin/jni/nativeinvokers/Callback");
+
+        midToCall = env->GetMethodID( cls, "call", "(Ljava/lang/String;)V");
+
+        QByteArray ba = QString(path).toUtf8();
+        jstring name = env->NewStringUTF(ba.data());
+
+        jobject globalCallback = env->NewGlobalRef(callback);
+
+        env->CallObjectMethod(globalCallback, midToCall, name);
+
+        //jmethodID midInit = env->GetMethodID( cls, "<init>", "(I)V");
+
 //        jobject newObj = env->NewObject( cls, midInit, callback);
 
-//        // Try runnning the toString() on this newly create object
 //        jmethodID midToCall = env->GetMethodID( cls, "call", "(Ljava/lang/String;)V");
-        addTile(path, NULL);
+
+//        _env->CallObjectMethodV(callback, midToCall, "TEST");
+
+        addTile(path, midToCall, callback);
     }
 }
 
 JNIEXPORT void JNICALL Java_ru_tykvin_jni_nativeinvokers_QTViewHelloWorld_close
   (JNIEnv *, jobject){
 
+}
+
+jint JNI_OnLoad(JavaVM* aVm, void* )
+{
+    // cache java VM
+    g_vm = aVm;
+    cout << "INIT JVM REFERENCE";
+    return JNI_VERSION_1_8;
 }
 

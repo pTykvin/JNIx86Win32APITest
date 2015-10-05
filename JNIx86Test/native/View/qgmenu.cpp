@@ -6,6 +6,8 @@ QGMenu::QGMenu(QRect sceneRect)
     _timer = new QTimeLine(1000);
     _timer->setFrameRange(0, 100);
     _rect = QRectF(sceneRect);
+    _opacity = 128;
+    _color = new QColor("#000000");
 
     QGraphicsItemAnimation *animation = new QGraphicsItemAnimation;
     animation->setItem(this);
@@ -22,7 +24,7 @@ QRectF QGMenu::boundingRect() const
     return _rect;
 }
 
-void QGMenu::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+void QGMenu::paint(QPainter *, const QStyleOptionGraphicsItem *, QWidget *widget)
 {
     std::cout << widget;
     //_color->setAlpha(_opacity);
@@ -41,13 +43,13 @@ int QGMenu::getOpacity()
     return _opacity;
 }
 
-void QGMenu::fadeTo(int opacity)
+void QGMenu::fadeTo(int)
 {
 
 }
 
 
-bool QGMenu::sceneEventFilter(QGraphicsItem *watched, QEvent *event)
+bool QGMenu::sceneEventFilter(QGraphicsItem *, QEvent *event)
 {
     if (event->type() == QMouseEvent::UngrabMouse) {
         fadeTo(_opacity == 0 ? 128 : 0);
